@@ -1,0 +1,211 @@
+---
+import { Image } from 'astro:assets';
+import BeforeAfter from './BeforeAfter.astro';
+import Paw from './icons/Paw.astro';
+import { gallery } from '../data/site';
+
+const tones = ['sand', 'ink', 'cream', 'brown'];
+---
+
+<section class="section gallery" id="galleria">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div>
+        <p class="eyebrow" data-reveal>Galleria</p>
+        <h2 class="h2" data-split>Ennen &amp; <em>jälkeen</em></h2>
+      </div>
+      <p class="lead" data-reveal>
+        Kuvagalleria täyttyy avajaisten jälkeen ensimmäisistä asiakkaista. Vedä liukusäädintä ja
+        näe ero.
+      </p>
+    </div>
+
+    <div data-reveal>
+      <BeforeAfter />
+    </div>
+  </div>
+
+  <div class="hscroll" data-hscroll>
+    <div class="hscroll__track container" data-hscroll-track>
+      {
+        gallery.map((g, i) => (
+          <figure class:list={['card', `card--${tones[i % tones.length]}`]}>
+            {g.image ? (
+              <Image src={g.image} alt={g.alt ?? g.label} widths={[320, 480, 760]} sizes="(max-width: 700px) 72vw, 380px" class="card__img" />
+            ) : (
+              <div class="card__ph" aria-hidden="true">
+                <span class="card__soon">Kuva tulossa</span>
+                <Paw class="card__paw" />
+              </div>
+            )}
+            <figcaption class="card__cap">
+              <span class="card__num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="card__label">{g.label}</span>
+            </figcaption>
+          </figure>
+        ))
+      }
+      <div class="card card--end">
+        <p>Koirasi voi olla seuraava.</p>
+        <a class="btn" href="#yhteys">
+          <span class="btn__label">Varaa aika</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gallery {
+    overflow-x: clip;
+    padding-bottom: clamp(48px, 6vw, 88px);
+  }
+
+  .hscroll {
+    margin-top: clamp(56px, 8vw, 100px);
+  }
+
+  .hscroll__track {
+    display: flex;
+    gap: clamp(14px, 2vw, 24px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 8px;
+    padding-inline: max(var(--gutter), calc((100% - var(--container)) / 2));
+    scroll-padding-inline: max(var(--gutter), calc((100% - var(--container)) / 2));
+    max-width: none;
+  }
+
+  .hscroll__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  :global(.hscroll-on) .hscroll__track {
+    overflow: visible;
+    width: max-content;
+    scroll-snap-type: none;
+  }
+
+  .card {
+    position: relative;
+    flex: none;
+    width: clamp(250px, 72vw, 380px);
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius);
+    overflow: hidden;
+    scroll-snap-align: start;
+  }
+
+  @media (min-width: 900px) {
+    .card {
+      width: clamp(280px, 28vw, 400px);
+    }
+  }
+
+  .card--sand {
+    background: var(--sand);
+    color: var(--ink);
+  }
+
+  .card--ink {
+    background: var(--ink);
+    color: var(--cream);
+  }
+
+  .card--cream {
+    background: var(--cream);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .card--brown {
+    background: var(--brown);
+    color: var(--cream);
+  }
+
+  .card :global(.card__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 1s var(--ease-out);
+  }
+
+  .card:hover :global(.card__img) {
+    scale: 1.05;
+  }
+
+  .card__ph {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .card__soon {
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    font-size: 0.7rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .card__ph :global(.card__paw) {
+    width: 34%;
+    opacity: 0.16;
+    rotate: -14deg;
+    transition: rotate 0.9s var(--ease-out), scale 0.9s var(--ease-out);
+  }
+
+  .card:hover :global(.card__paw) {
+    rotate: 6deg;
+    scale: 1.1;
+  }
+
+  .card__cap {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 22px;
+  }
+
+  .card:has(.card__img) .card__cap {
+    color: var(--cream);
+    background: linear-gradient(to top, rgba(20, 18, 16, 0.6), transparent);
+  }
+
+  .card__num {
+    font-family: var(--font-display);
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  .card__label {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+
+  .card--end {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 22px;
+    padding: 32px;
+    text-align: center;
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .card--end p {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.5rem + 1vw, 2.4rem);
+    line-height: 1.1;
+    font-style: italic;
+  }
+</style>

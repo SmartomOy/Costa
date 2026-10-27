@@ -1,0 +1,206 @@
+---
+import { Image } from 'astro:assets';
+import Paw from './icons/Paw.astro';
+import { beforeAfter } from '../data/site';
+
+const { before, after, alt } = beforeAfter;
+---
+
+<div class="ba" data-ba data-cursor-label="Vedä">
+  <div class="ba__layer ba__layer--after">
+    {
+      after ? (
+        <Image src={after} alt={`${alt} – jälkeen`} widths={[640, 1024, 1400]} sizes="(max-width: 1240px) 100vw, 1240px" />
+      ) : (
+        <div class="ba__ph ba__ph--after" role="img" aria-label="Paikkakuva: jälkeen">
+          <Paw class="ba__ph-paw" />
+          <span>Kuva tulossa</span>
+        </div>
+      )
+    }
+    <span class="ba__tag ba__tag--after">Jälkeen</span>
+  </div>
+
+  <div class="ba__layer ba__layer--before" data-ba-before>
+    {
+      before ? (
+        <Image src={before} alt={`${alt} – ennen`} widths={[640, 1024, 1400]} sizes="(max-width: 1240px) 100vw, 1240px" />
+      ) : (
+        <div class="ba__ph ba__ph--before" role="img" aria-label="Paikkakuva: ennen">
+          <Paw class="ba__ph-paw" />
+          <span>Kuva tulossa</span>
+        </div>
+      )
+    }
+    <span class="ba__tag ba__tag--before">Ennen</span>
+  </div>
+
+  <div class="ba__handle" data-ba-handle aria-hidden="true">
+    <span class="ba__knob">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 6l-6 6 6 6M15 6l6 6-6 6"></path>
+      </svg>
+    </span>
+  </div>
+
+  <input
+    class="ba__range"
+    type="range"
+    min="0"
+    max="100"
+    value="50"
+    step="1"
+    aria-label="Vertaa ennen ja jälkeen -kuvaa"
+    data-ba-range
+  />
+</div>
+
+<style>
+  .ba {
+    --pos: 50%;
+    position: relative;
+    aspect-ratio: 16 / 10;
+    max-height: 78svh;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--sand);
+    user-select: none;
+    touch-action: pan-y;
+    cursor: ew-resize;
+  }
+
+  @media (max-width: 640px) {
+    .ba {
+      aspect-ratio: 4 / 5;
+    }
+  }
+
+  .ba__layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .ba__layer :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ba__layer--before {
+    clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+  }
+
+  .ba__ph {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 14px;
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .ba__ph :global(.ba__ph-paw) {
+    width: clamp(64px, 10vw, 120px);
+  }
+
+  .ba__ph--after {
+    background:
+      radial-gradient(60% 70% at 70% 40%, var(--cream) 0%, transparent 70%),
+      var(--sand);
+    color: var(--brown);
+  }
+
+  .ba__ph--before {
+    background:
+      repeating-linear-gradient(
+        115deg,
+        rgba(20, 18, 16, 0.07) 0 2px,
+        transparent 2px 9px
+      ),
+      repeating-linear-gradient(
+        65deg,
+        rgba(20, 18, 16, 0.05) 0 1px,
+        transparent 1px 7px
+      ),
+      var(--sand-2);
+    color: var(--ink-2);
+  }
+
+  .ba__tag {
+    position: absolute;
+    top: 20px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(246, 237, 228, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .ba__tag--before {
+    left: 20px;
+  }
+
+  .ba__tag--after {
+    right: 20px;
+  }
+
+  .ba__handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    width: 2px;
+    translate: -50% 0;
+    background: var(--cream);
+    pointer-events: none;
+  }
+
+  .ba__knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 58px;
+    height: 58px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--cream);
+    color: var(--ink);
+    box-shadow: 0 10px 30px -8px rgba(20, 18, 16, 0.4);
+    transition: scale 0.4s var(--ease-out);
+  }
+
+  .ba__knob svg {
+    width: 24px;
+  }
+
+  .ba:active .ba__knob {
+    scale: 0.92;
+  }
+
+  .ba__range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    /* veto hoidetaan pointer-tapahtumilla (sivu vierii mobiilissa normaalisti),
+       range-kenttä palvelee näppäimistöä ja ruudunlukijoita */
+    pointer-events: none;
+  }
+
+  .ba:has(.ba__range:focus-visible) .ba__knob {
+    outline: 2px solid var(--brown);
+    outline-offset: 4px;
+  }
+</style>

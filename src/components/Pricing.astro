@@ -1,0 +1,315 @@
+---
+import { extras, priceNote, prices, sizes } from '../data/site';
+
+const defaultSize = sizes[0].id;
+const eur = (n: number) => `${n} €`;
+---
+
+<section class="section pricing" id="hinnasto" data-pricing>
+  <div class="container pricing__grid">
+    <div class="pricing__intro">
+      <p class="eyebrow" data-reveal>Hinnasto</p>
+      <h2 class="h2" data-split>Selkeät <em>hinnat</em></h2>
+      <p class="lead" data-reveal>{priceNote}</p>
+
+      <div class="extras" data-reveal>
+        <h3 class="extras__title">Lisäpalvelut</h3>
+        <ul>
+          {
+            extras.map((e) => (
+              <li>
+                <span>{e.name}</span>
+                <span class="extras__price">
+                  {eur(e.price)}
+                  {e.unit && <small>{e.unit}</small>}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="pricing__card" data-reveal>
+      <p class="pricing__ask" id="size-label">Koirani koko</p>
+      <div class="tabs" role="tablist" aria-labelledby="size-label" data-tabs>
+        <span class="tabs__indicator" aria-hidden="true" data-tabs-indicator></span>
+        {
+          sizes.map((s, i) => (
+            <button
+              class="tab"
+              type="button"
+              role="tab"
+              id={`tab-${s.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-controls="price-panel"
+              tabindex={i === 0 ? 0 : -1}
+              data-size={s.id}
+            >
+              <span class="tab__label">{s.label}</span>
+              <span class="tab__hint">{s.hint}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="prices" id="price-panel" role="tabpanel" aria-labelledby={`tab-${defaultSize}`} tabindex="0">
+        <ul>
+          {
+            prices.map((p) => (
+              <li class="price" data-prices={JSON.stringify(p.price)}>
+                <span class="price__name">
+                  {p.name}
+                  {p.note && <small>{p.note}</small>}
+                </span>
+                <span class="price__leader" aria-hidden="true" />
+                <span class="price__value">
+                  {p.from && <span class="price__from">alk.</span>}
+                  <span class="price__num" data-price-num>
+                    {p.price[defaultSize]}
+                  </span>
+                  <span class="price__eur"> €</span>
+                </span>
+                <span class="price__all">
+                  {sizes.map((s) => `${s.label} ${eur(p.price[s.id])}`).join(' · ')}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing {
+    background:
+      radial-gradient(45% 40% at 80% 35%, rgba(214, 195, 173, 0.35), transparent 100%),
+      var(--cream);
+  }
+
+  .pricing__grid {
+    display: grid;
+    gap: 56px;
+  }
+
+  @media (min-width: 1000px) {
+    .pricing__grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .pricing__intro {
+      position: sticky;
+      top: calc(var(--header-h) + 32px);
+    }
+  }
+
+  .pricing__intro {
+    display: grid;
+    gap: 22px;
+    align-content: start;
+  }
+
+  .extras {
+    margin-top: 18px;
+    padding: 26px 28px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: rgba(239, 228, 215, 0.6);
+  }
+
+  .extras__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .extras li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 10px;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.95rem;
+  }
+
+  .extras li:last-child {
+    border-bottom: 0;
+  }
+
+  .extras__price {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .extras__price small {
+    font-weight: 400;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+
+  .pricing__card {
+    padding: clamp(22px, 3.4vw, 44px);
+    border-radius: var(--radius-lg);
+    background: var(--ink);
+    color: var(--cream);
+    box-shadow: 0 40px 80px -40px rgba(20, 18, 16, 0.45);
+  }
+
+  .pricing__ask {
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sand-2);
+    margin-bottom: 14px;
+  }
+
+  .tabs {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 5px;
+    border-radius: 999px;
+    background: rgba(246, 237, 228, 0.08);
+    border: 1px solid var(--line-light);
+  }
+
+  :global(html:not(.js)) .tabs,
+  :global(html:not(.js)) .pricing__ask {
+    display: none;
+  }
+
+  .tabs__indicator {
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    width: calc((100% - 10px) / 3);
+    border-radius: 999px;
+    background: var(--cream);
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .tab {
+    position: relative;
+    display: grid;
+    gap: 1px;
+    padding: 10px 6px;
+    border-radius: 999px;
+    text-align: center;
+    color: rgba(246, 237, 228, 0.75);
+    transition: color 0.4s;
+  }
+
+  .tab[aria-selected='true'] {
+    color: var(--ink);
+  }
+
+  .tab__label {
+    font-size: clamp(0.82rem, 0.75rem + 0.3vw, 0.95rem);
+    font-weight: 500;
+  }
+
+  .tab__hint {
+    font-size: 0.7rem;
+    opacity: 0.7;
+  }
+
+  .tab:focus-visible {
+    outline-color: var(--sand-2);
+  }
+
+  .prices {
+    margin-top: 20px;
+  }
+
+  .prices:focus-visible {
+    outline-color: var(--sand-2);
+  }
+
+  .price {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 14px;
+    padding-block: 20px;
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .price:last-child {
+    border-bottom: 0;
+  }
+
+  .price__name {
+    display: grid;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.7rem);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  .price__name small {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--sand-2);
+    margin-top: 4px;
+  }
+
+  .price__leader {
+    align-self: center;
+    height: 1px;
+    min-width: 16px;
+    background-image: linear-gradient(to right, rgba(246, 237, 228, 0.3) 40%, transparent 0);
+    background-size: 6px 1px;
+    transform-origin: left;
+  }
+
+  .price__value {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .price__from {
+    font-size: 0.75rem;
+    color: var(--sand-2);
+    margin-right: 2px;
+  }
+
+  .price__num {
+    display: inline-block;
+    min-width: 2ch;
+    text-align: right;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.5rem + 1vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .price__eur {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+  }
+
+  .price__all {
+    display: none;
+    grid-column: 1 / -1;
+    font-size: 0.85rem;
+    color: var(--sand-2);
+  }
+
+  :global(html:not(.js)) .price__all {
+    display: block;
+  }
+
+  :global(html:not(.js)) .price__value,
+  :global(html:not(.js)) .price__leader {
+    display: none;
+  }
+</style>

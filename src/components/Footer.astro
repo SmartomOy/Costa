@@ -1,0 +1,165 @@
+---
+import Arrow from './icons/Arrow.astro';
+import Paw from './icons/Paw.astro';
+import { nav, site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__brand" data-footer-brand aria-hidden="true">
+      <span class="footer__small">Trimmaamo</span>
+      <span class="footer__script">Costa</span>
+    </div>
+
+    <div class="footer__cols">
+      <div class="footer__col">
+        <p class="footer__tagline">{site.tagline}.<br />Koirasi ehdoilla.</p>
+      </div>
+
+      <nav class="footer__col" aria-label="Alavalikko">
+        <ul>
+          {nav.map((n) => (
+            <li>
+              <a href={n.href}>{n.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="footer__col">
+        <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        <span>
+          {site.address.street}, {site.address.postalCode} {site.address.city}
+        </span>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© {year} {site.name} · Y-tunnus {site.businessId}</span>
+      <a class="footer__top" href="#top">
+        Takaisin ylös <Arrow dir="up" />
+      </a>
+    </div>
+  </div>
+  <Paw class="footer__paw" />
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    padding-block: clamp(64px, 9vw, 120px) 32px;
+    background: var(--ink);
+    color: var(--cream);
+    overflow: hidden;
+  }
+
+  .footer__brand {
+    display: grid;
+    justify-items: center;
+    line-height: 0.9;
+    padding-bottom: clamp(40px, 6vw, 72px);
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .footer__small {
+    font-family: var(--font-display);
+    font-size: clamp(0.9rem, 0.6rem + 1.4vw, 1.6rem);
+    font-weight: 500;
+    letter-spacing: 0.5em;
+    margin-right: -0.5em;
+    margin-bottom: clamp(14px, 2.4vw, 32px);
+    text-transform: uppercase;
+  }
+
+  .footer__script {
+    font-family: var(--font-script);
+    font-size: clamp(6rem, 2rem + 18vw, 17rem);
+    line-height: 1;
+    padding-inline: 0.1em;
+    color: var(--cream);
+  }
+
+  .footer__cols {
+    display: grid;
+    gap: 32px;
+    padding-block: 40px;
+  }
+
+  @media (min-width: 760px) {
+    .footer__cols {
+      grid-template-columns: 1.2fr 1fr 1fr;
+    }
+  }
+
+  .footer__col {
+    display: grid;
+    align-content: start;
+    gap: 8px;
+    color: rgba(246, 237, 228, 0.72);
+  }
+
+  .footer__col ul {
+    display: grid;
+    gap: 8px;
+  }
+
+  .footer__col a {
+    width: fit-content;
+    transition: color 0.3s;
+  }
+
+  .footer__col a:hover {
+    color: var(--cream);
+  }
+
+  .footer__tagline {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    line-height: 1.25;
+    color: var(--cream);
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line-light);
+    font-size: 0.82rem;
+    color: rgba(246, 237, 228, 0.55);
+  }
+
+  .footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cream);
+  }
+
+  .footer__top :global(svg) {
+    width: 16px;
+    transition: translate 0.4s var(--ease-out);
+  }
+
+  .footer__top:hover :global(svg) {
+    translate: 0 -3px;
+  }
+
+  .footer :global(.footer__paw) {
+    position: absolute;
+    right: -40px;
+    top: 30%;
+    width: 220px;
+    color: rgba(246, 237, 228, 0.03);
+    rotate: -20deg;
+    pointer-events: none;
+  }
+
+  :focus-visible {
+    outline-color: var(--sand-2);
+  }
+</style>

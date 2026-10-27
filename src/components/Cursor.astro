@@ -1,0 +1,78 @@
+<div class="cursor" data-cursor aria-hidden="true">
+  <span class="cursor__dot"></span>
+  <span class="cursor__label" data-cursor-label></span>
+</div>
+
+<style>
+  .cursor {
+    display: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 120;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      opacity: 0;
+      mix-blend-mode: difference;
+      transition: opacity 0.3s;
+    }
+
+    :global(.cursor-on) .cursor {
+      opacity: 1;
+    }
+  }
+
+  .cursor__dot {
+    grid-area: 1 / 1;
+    width: 12px;
+    height: 12px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: var(--cream);
+    transition:
+      width 0.45s var(--ease-out),
+      height 0.45s var(--ease-out),
+      background-color 0.3s,
+      opacity 0.3s;
+  }
+
+  .cursor.cursor--hover .cursor__dot {
+    width: 54px;
+    height: 54px;
+  }
+
+  .cursor.cursor--label {
+    mix-blend-mode: normal;
+  }
+
+  .cursor.cursor--label .cursor__dot {
+    width: 92px;
+    height: 92px;
+    background: var(--brown);
+  }
+
+  .cursor.cursor--hidden .cursor__dot {
+    opacity: 0;
+  }
+
+  .cursor__label {
+    grid-area: 1 / 1;
+    translate: -50% -50%;
+    color: var(--cream);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .cursor.cursor--label .cursor__label {
+    opacity: 1;
+  }
+</style>

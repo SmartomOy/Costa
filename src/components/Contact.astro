@@ -1,0 +1,241 @@
+---
+import Arrow from './icons/Arrow.astro';
+import { mapsUrl, site } from '../data/site';
+---
+
+<section class="section contact" id="yhteys">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Ajanvaraus &amp; yhteystiedot</p>
+      <h2 class="h2 contact__title" data-split>Soita tai laita <em>viestiä</em></h2>
+      <p class="lead" data-reveal>{site.bookingNote}</p>
+    </div>
+
+    <div class="contact__grid">
+      <a class="contact__big" href={`tel:${site.phone}`} data-reveal data-cursor-label="Soita">
+        <span class="contact__kicker">Soita</span>
+        <span class="contact__value">{site.phoneDisplay}</span>
+        <span class="contact__arrow" aria-hidden="true"><Arrow /></span>
+      </a>
+      <a class="contact__big" href={`mailto:${site.email}`} data-reveal data-cursor-label="Kirjoita">
+        <span class="contact__kicker">Sähköposti</span>
+        <span class="contact__value contact__value--email">
+          {site.email.split('@')[0]}@<wbr />{site.email.split('@')[1]}
+        </span>
+        <span class="contact__arrow" aria-hidden="true"><Arrow /></span>
+      </a>
+    </div>
+
+    <div class="contact__info" data-reveal-stagger>
+      <div class="info">
+        <h3 class="info__title">Osoite</h3>
+        <address>
+          {site.address.street}<br />
+          {site.address.postalCode} {site.address.city}
+        </address>
+        <a class="info__link" href={mapsUrl} target="_blank" rel="noopener">
+          Avaa kartalla <Arrow />
+        </a>
+      </div>
+
+      <div class="info">
+        <h3 class="info__title">Aukioloajat</h3>
+        <dl class="hours">
+          {
+            site.hours.map((h) => (
+              <div>
+                <dt>{h.days}</dt>
+                <dd>{h.time}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <div class="info">
+        <h3 class="info__title">Seuraa</h3>
+        <ul class="socials">
+          {
+            site.socials.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener" class="info__link">
+                  {s.label} <Arrow />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact__grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  @media (min-width: 900px) {
+    .contact__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+  }
+
+  .contact__big {
+    position: relative;
+    display: grid;
+    gap: 10px;
+    padding: clamp(28px, 4vw, 52px);
+    padding-right: clamp(80px, 9vw, 120px);
+    border-radius: var(--radius-lg);
+    background: var(--ink);
+    color: var(--cream);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .contact__big::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--brown);
+    clip-path: circle(0% at 100% 100%);
+    transition: clip-path 0.8s var(--ease-out);
+  }
+
+  .contact__big:hover::before,
+  .contact__big:focus-visible::before {
+    clip-path: circle(150% at 100% 100%);
+  }
+
+  .contact__kicker {
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sand-2);
+  }
+
+  .contact__big:hover .contact__kicker {
+    color: var(--sand);
+  }
+
+  .contact__value {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.2rem + 3.6vw, 4rem);
+    font-weight: 500;
+    line-height: 1.05;
+  }
+
+  .contact__value--email {
+    font-size: clamp(1.4rem, 0.9rem + 1.8vw, 2.5rem);
+  }
+
+  .contact__arrow {
+    position: absolute;
+    right: clamp(24px, 3.4vw, 44px);
+    bottom: clamp(24px, 3.4vw, 44px);
+    width: clamp(44px, 5vw, 60px);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--line-light);
+    transition:
+      transform 0.6s var(--ease-out),
+      background-color 0.5s,
+      color 0.5s;
+  }
+
+  .contact__arrow :global(svg) {
+    width: 40%;
+    rotate: -45deg;
+  }
+
+  .contact__big:hover .contact__arrow {
+    background: var(--cream);
+    color: var(--ink);
+    transform: rotate(45deg);
+  }
+
+  .contact__info {
+    display: grid;
+    gap: 36px;
+    margin-top: clamp(48px, 7vw, 80px);
+    padding-top: clamp(32px, 4vw, 48px);
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 760px) {
+    .contact__info {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+  }
+
+  .info {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+  }
+
+  .info__title {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--brown);
+  }
+
+  address {
+    font-style: normal;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .info__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    width: fit-content;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+    transition: border-color 0.3s;
+  }
+
+  .info__link:hover {
+    border-color: var(--ink);
+  }
+
+  .info__link :global(svg) {
+    width: 16px;
+    rotate: -45deg;
+    transition: translate 0.4s var(--ease-out);
+  }
+
+  .info__link:hover :global(svg) {
+    translate: 2px -2px;
+  }
+
+  .hours div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hours dd {
+    font-weight: 500;
+    text-align: right;
+  }
+
+  .socials {
+    display: grid;
+    gap: 10px;
+  }
+</style>

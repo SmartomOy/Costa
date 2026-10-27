@@ -1,0 +1,336 @@
+---
+import { Image } from 'astro:assets';
+import dog from '../assets/logo-dog.png';
+import { nav, site } from '../data/site';
+---
+
+<header class="header" data-header>
+  <div class="header__inner container">
+    <a class="brand" href="#top" aria-label={`${site.name} – etusivulle`}>
+      <Image src={dog} alt="" width={44} densities={[1, 2]} class="brand__dog" loading="eager" />
+      <span class="brand__text">
+        <span class="brand__small">Trimmaamo</span>
+        <span class="brand__script">Costa</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Päävalikko">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} class="nav__link">
+                <span>{item.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="btn header__cta" href={`tel:${site.phone}`} data-magnetic>
+      <span class="btn__label">Varaa aika</span>
+    </a>
+
+    <button
+      class="burger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-toggle
+    >
+      <span class="sr-only">Avaa valikko</span>
+      <span class="burger__line burger__line--top"></span>
+      <span class="burger__line burger__line--bottom"></span>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="mobile-menu" data-menu hidden>
+  <nav class="menu__nav container" aria-label="Mobiilivalikko">
+    <ul>
+      {
+        nav.map((item, i) => (
+          <li>
+            <a href={item.href} class="menu__link" data-menu-link>
+              <span class="menu__num">0{i + 1}</span>
+              <span class="menu__label">{item.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="menu__foot" data-menu-link>
+      <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+  </nav>
+</div>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 90;
+    height: var(--header-h);
+    transition:
+      transform 0.6s var(--ease-out),
+      background-color 0.4s,
+      box-shadow 0.4s;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(246, 237, 228, 0.78);
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    box-shadow: 0 1px 0 var(--line);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  :global(.header--scrolled).header::before {
+    opacity: 1;
+  }
+
+  :global(.header--hidden).header {
+    transform: translateY(-100%);
+  }
+
+  :global(.menu-open) .header {
+    transform: none;
+  }
+
+  :global(.menu-open) .header::before {
+    opacity: 0;
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 100%;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-right: auto;
+    transition: color 0.4s;
+  }
+
+  .brand__dog {
+    width: 40px;
+    height: auto;
+    transition:
+      transform 0.6s var(--ease-out),
+      opacity 0.4s;
+  }
+
+  .brand:hover .brand__dog {
+    transform: rotate(-8deg) scale(1.06);
+  }
+
+  .brand__text {
+    display: grid;
+    line-height: 1;
+  }
+
+  .brand__small {
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+  }
+
+  .brand__script {
+    font-family: var(--font-script);
+    font-size: 1.85rem;
+    margin-top: 5px;
+    margin-left: 6px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .nav ul {
+    display: flex;
+    gap: 6px;
+  }
+
+  .nav__link {
+    position: relative;
+    display: block;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    font-weight: 450;
+  }
+
+  .nav__link::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 6px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .nav__link:hover::after,
+  .nav__link[aria-current='true']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .header__cta {
+    display: none;
+    min-height: 46px;
+    padding: 0 22px;
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 960px) {
+    .nav,
+    .header__cta {
+      display: flex;
+    }
+    .burger,
+    .menu {
+      display: none !important;
+    }
+  }
+
+  .burger {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 7px;
+    background: var(--ink);
+    color: var(--cream);
+    transition: background-color 0.4s;
+  }
+
+  .burger__line {
+    width: 18px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .burger[aria-expanded='true'] {
+    background: var(--cream);
+    color: var(--ink);
+  }
+
+  .burger[aria-expanded='true'] .burger__line--top {
+    transform: translateY(4.25px) rotate(45deg);
+  }
+
+  .burger[aria-expanded='true'] .burger__line--bottom {
+    transform: translateY(-4.25px) rotate(-45deg);
+  }
+
+  :global(.menu-open) .brand {
+    color: var(--cream);
+  }
+
+  :global(.menu-open) .brand__dog {
+    opacity: 0;
+  }
+
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: flex-end;
+    padding-block: calc(var(--header-h) + 24px) 40px;
+    background: var(--ink);
+    color: var(--cream);
+    clip-path: circle(0% at calc(100% - var(--gutter) - 24px) calc(var(--header-h) / 2));
+    transition: clip-path 0.8s var(--ease-in-out);
+  }
+
+  .menu[hidden] {
+    display: none;
+  }
+
+  :global(.menu-open) .menu {
+    clip-path: circle(150% at calc(100% - var(--gutter) - 24px) calc(var(--header-h) / 2));
+  }
+
+  .menu__nav {
+    display: grid;
+    gap: 40px;
+  }
+
+  .menu__link {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    padding-block: 6px;
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .menu__num {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--sand-2);
+  }
+
+  .menu__label {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 10vw, 3.6rem);
+    line-height: 1.15;
+  }
+
+  .menu__link,
+  .menu__foot {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.5s,
+      transform 0.7s var(--ease-out);
+  }
+
+  :global(.menu-open) .menu__link,
+  :global(.menu-open) .menu__foot {
+    opacity: 1;
+    transform: none;
+  }
+
+  .menu li:nth-child(1) .menu__link { transition-delay: 0.2s; }
+  .menu li:nth-child(2) .menu__link { transition-delay: 0.26s; }
+  .menu li:nth-child(3) .menu__link { transition-delay: 0.32s; }
+  .menu li:nth-child(4) .menu__link { transition-delay: 0.38s; }
+  .menu li:nth-child(5) .menu__link { transition-delay: 0.44s; }
+  .menu__foot { transition-delay: 0.5s; }
+
+  .menu__foot {
+    display: grid;
+    gap: 6px;
+    color: var(--sand);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu,
+    .menu__link,
+    .menu__foot {
+      transition: none;
+    }
+  }
+</style>

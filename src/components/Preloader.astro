@@ -1,0 +1,99 @@
+---
+import Paw from './icons/Paw.astro';
+---
+
+<div class="preloader" data-preloader aria-hidden="true">
+  <div class="preloader__trail">
+    <Paw class="preloader__paw" />
+    <Paw class="preloader__paw" />
+    <Paw class="preloader__paw" />
+    <Paw class="preloader__paw" />
+  </div>
+  <p class="preloader__word">Costa</p>
+  <span class="preloader__bar"><span></span></span>
+</div>
+
+<style>
+  .preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    background: var(--ink);
+    color: var(--cream);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js:not(.intro-seen):not(.anim-failsafe)) .preloader {
+      display: flex;
+      animation: preloader-failsafe 0s 4.5s forwards;
+    }
+  }
+
+  @keyframes preloader-failsafe {
+    to {
+      visibility: hidden;
+    }
+  }
+
+  .preloader__trail {
+    position: relative;
+    width: 220px;
+    height: 120px;
+  }
+
+  .preloader__trail :global(.preloader__paw) {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    opacity: 0;
+  }
+
+  .preloader__trail :global(.preloader__paw:nth-child(1)) {
+    left: 0;
+    top: 74px;
+    rotate: 70deg;
+  }
+  .preloader__trail :global(.preloader__paw:nth-child(2)) {
+    left: 56px;
+    top: 34px;
+    rotate: 80deg;
+  }
+  .preloader__trail :global(.preloader__paw:nth-child(3)) {
+    left: 116px;
+    top: 72px;
+    rotate: 70deg;
+  }
+  .preloader__trail :global(.preloader__paw:nth-child(4)) {
+    left: 174px;
+    top: 32px;
+    rotate: 80deg;
+  }
+
+  .preloader__word {
+    font-family: var(--font-script);
+    font-size: clamp(3.5rem, 10vw, 5.5rem);
+    line-height: 1;
+    padding-inline: 0.2em;
+    clip-path: inset(-30% 100% -30% -10%);
+  }
+
+  .preloader__bar {
+    width: 120px;
+    height: 1px;
+    background: var(--line-light);
+    overflow: hidden;
+  }
+
+  .preloader__bar span {
+    display: block;
+    height: 100%;
+    background: var(--cream);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+</style>

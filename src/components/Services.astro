@@ -1,0 +1,178 @@
+---
+import ServiceIcon from './icons/ServiceIcon.astro';
+import Arrow from './icons/Arrow.astro';
+import { services } from '../data/site';
+---
+
+<section class="section services" id="palvelut">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div>
+        <p class="eyebrow" data-reveal>Palvelut</p>
+        <h2 class="h2" data-split>Hoitoa, joka tehdään <em>sydämellä</em></h2>
+      </div>
+      <p class="lead" data-reveal>
+        Jokainen käynti räätälöidään koirasi turkin, luonteen ja tarpeiden mukaan. Valitse
+        palvelu – tai kysy, niin suunnitellaan yhdessä.
+      </p>
+    </div>
+
+    <div class="services__grid" data-reveal-stagger>
+      {
+        services.map((s, i) => (
+          <article class="service" data-cursor-hover>
+            <div class="service__top">
+              <span class="service__num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="service__icon" data-draw>
+                <ServiceIcon name={s.icon} />
+              </span>
+            </div>
+            <h3 class="service__title">{s.title}</h3>
+            <p class="service__text">{s.text}</p>
+            <div class="service__meta">
+              <span>Kesto {s.duration}</span>
+              <a href="#hinnasto" class="service__link">
+                Hinnat <Arrow />
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .services__grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  @media (min-width: 680px) {
+    .services__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .service {
+      min-height: 340px;
+    }
+  }
+
+  @media (min-width: 1040px) {
+    .services__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+  }
+
+  .service {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: clamp(26px, 3vw, 38px);
+    border-radius: var(--radius);
+    background: var(--cream-2);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      color 0.5s var(--ease-out),
+      transform 0.6s var(--ease-out),
+      border-color 0.5s;
+  }
+
+  .service::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--ink);
+    clip-path: circle(0% at 50% 100%);
+    transition: clip-path 0.7s var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .service:hover {
+      color: var(--cream);
+      transform: translateY(-6px);
+      border-color: var(--ink);
+    }
+    .service:hover::before {
+      clip-path: circle(150% at 50% 100%);
+    }
+    .service:hover .service__text,
+    .service:hover .service__meta {
+      color: rgba(246, 237, 228, 0.72);
+    }
+    .service:hover .service__icon {
+      color: var(--sand-2);
+      transform: rotate(-8deg) scale(1.08);
+    }
+  }
+
+  .service__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: auto;
+    padding-bottom: 28px;
+  }
+
+  .service__num {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-style: italic;
+  }
+
+  .service__icon {
+    display: block;
+    width: 56px;
+    color: var(--brown);
+    transition:
+      color 0.5s,
+      transform 0.7s var(--ease-out);
+  }
+
+  .service__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.5rem + 1vw, 2.3rem);
+    font-weight: 500;
+    line-height: 1.1;
+  }
+
+  .service__text {
+    color: var(--muted);
+    transition: color 0.5s;
+  }
+
+  .service__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-top: 18px;
+    margin-top: 6px;
+    border-top: 1px solid currentColor;
+    border-color: color-mix(in srgb, currentColor 18%, transparent);
+    font-size: 0.85rem;
+    color: var(--muted);
+    transition: color 0.5s;
+  }
+
+  .service__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: inherit;
+  }
+
+  .service__link :global(svg) {
+    width: 16px;
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .service__link:hover :global(svg) {
+    transform: translateX(4px);
+  }
+</style>
