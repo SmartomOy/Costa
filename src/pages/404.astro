@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import dog from '../assets/logo-dog.png';
+import { site } from '../data/site';
+import { asset } from '../lib/url';
+---
+
+<Base title={`Sivua ei löytynyt | ${site.name}`} noindex>
+  <main id="sisalto" class="nf">
+    <Image src={dog} alt="" width={220} loading="eager" class="nf__dog" />
+    <p class="eyebrow">Virhe 404</p>
+    <h1 class="h2">Tämä polku johti <em>ohi</em></h1>
+    <p class="lead">Sivua ei löytynyt – mutta etusivulta löytyy kaikki tarvittava.</p>
+    <a class="btn" href={asset('/')}><span class="btn__label">Etusivulle</span></a>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 20px;
+    padding: 48px var(--gutter);
+    text-align: center;
+  }
+
+  .nf :global(.nf__dog) {
+    width: 180px;
+    animation: tilt 3s var(--ease-in-out) infinite alternate;
+  }
+
+  .nf .lead {
+    margin-bottom: 12px;
+  }
+
+  @keyframes tilt {
+    from {
+      rotate: -6deg;
+    }
+    to {
+      rotate: 6deg;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nf :global(.nf__dog) {
+      animation: none;
+    }
+  }
+</style>

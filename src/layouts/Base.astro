@@ -1,0 +1,94 @@
+---
+import '@fontsource/cormorant-garamond/400.css';
+import '@fontsource/cormorant-garamond/400-italic.css';
+import '@fontsource/cormorant-garamond/500.css';
+import '@fontsource/cormorant-garamond/600.css';
+import '@fontsource/great-vibes/400.css';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import { site } from '../data/site';
+import { asset } from '../lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = `${site.name} – ${site.tagline} | ${site.city}`,
+  description = site.description,
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(asset('og-image.png'), Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: site.name,
+  description: site.description,
+  url: canonical.href,
+  image: ogImage.href,
+  telephone: site.phone,
+  email: site.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    postalCode: site.address.postalCode,
+    addressLocality: site.address.city,
+    addressCountry: 'FI',
+  },
+  sameAs: site.socials.map((s) => s.url),
+};
+---
+
+<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#f6ede4" />
+    <link rel="icon" href={asset('favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fi_FI" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <script is:inline>
+      // Merkitään JS käytössä olevaksi heti, jotta animaatioiden lähtötilat
+      // eivät välähdä. Jos animaatiot eivät käynnisty, sisältö näytetään silti.
+      document.documentElement.classList.add('js');
+      try {
+        if (sessionStorage.getItem('costa-intro')) document.documentElement.classList.add('intro-seen');
+      } catch (e) {}
+      setTimeout(function () {
+        if (!document.documentElement.classList.contains('anim-ready')) {
+          document.documentElement.classList.add('anim-failsafe');
+        }
+      }, 3500);
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#sisalto">Siirry sisältöön</a>
+    <slot />
+    <script>
+      import '../scripts/main';
+    </script>
+  </body>
+</html>

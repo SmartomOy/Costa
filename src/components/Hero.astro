@@ -1,0 +1,345 @@
+---
+import { Image } from 'astro:assets';
+import dog from '../assets/logo-dog.png';
+import Paw from './icons/Paw.astro';
+import Arrow from './icons/Arrow.astro';
+import { site } from '../data/site';
+
+const opening = new Date(site.openingDate);
+const openingShort = new Intl.DateTimeFormat('fi-FI', {
+  day: 'numeric',
+  month: 'numeric',
+  year: 'numeric',
+  timeZone: 'Europe/Helsinki',
+}).format(opening);
+
+const word = 'TRIMMAAMO'.split('');
+
+// Taustan leijuvat tassut: [left %, top %, koko px, kierto, syvyys]
+const paws: [number, number, number, number, number][] = [
+  [8, 22, 34, -24, 0.6],
+  [16, 70, 22, 18, 1.2],
+  [26, 40, 16, -8, 1.6],
+  [78, 18, 26, 22, 1],
+  [88, 54, 38, -16, 0.5],
+  [72, 80, 20, 30, 1.4],
+  [92, 86, 16, -30, 1.8],
+];
+---
+
+<section class="hero" id="top" data-hero-section>
+  <div class="hero__bg" aria-hidden="true">
+    <span class="hero__halo" data-hero-halo></span>
+    {
+      paws.map(([x, y, size, rot, depth]) => (
+        <span
+          class="hero__float"
+          data-depth={depth}
+          style={`left:${x}%;top:${y}%;width:${size}px;rotate:${rot}deg`}
+        >
+          <Paw />
+        </span>
+      ))
+    }
+  </div>
+
+  <div class="hero__inner container">
+    <p class="hero__badge" data-hero>
+      <span class="hero__pulse" aria-hidden="true"></span>
+      Avataan pian · {openingShort}
+    </p>
+
+    <h1 class="hero__logo">
+      <span class="sr-only">{site.name}</span>
+      <span class="hero__dog" data-hero data-hero-dog aria-hidden="true">
+        <span class="hero__dog-inner" data-parallax-dog>
+          <Image
+            src={dog}
+            alt=""
+            widths={[320, 480, 676]}
+            sizes="(max-width: 600px) 60vw, 360px"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </span>
+      </span>
+      <span class="hero__word" aria-hidden="true">
+        {word.map((l) => <span class="hero__letter" data-hero>{l}</span>)}
+      </span>
+      <span class="hero__script-row" aria-hidden="true">
+        <span class="hero__rule hero__rule--l" data-hero></span>
+        <span class="hero__script" data-hero>Costa</span>
+        <span class="hero__rule hero__rule--r" data-hero></span>
+      </span>
+      <span class="hero__paw" data-hero aria-hidden="true"><Paw /></span>
+    </h1>
+
+    <p class="hero__lead" data-hero>
+      {site.tagline} – rauhallinen ja yksilöllinen turkinhoito koirasi ehdoilla.
+    </p>
+
+    <div class="hero__ctas" data-hero>
+      <a class="btn" href="#yhteys" data-magnetic>
+        <span class="btn__label">Varaa aika</span>
+        <Arrow />
+      </a>
+      <a class="btn btn--ghost" href="#palvelut" data-magnetic>
+        <span class="btn__label">Palvelut & hinnat</span>
+      </a>
+    </div>
+  </div>
+
+  <a class="hero__scroll" href="#avajaiset" data-hero aria-label="Vieritä alas">
+    <span>Vieritä</span>
+    <span class="hero__scroll-line" aria-hidden="true"></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    --logo-w: min(500px, 84vw, 44svh);
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding-block: calc(var(--header-h) + 16px) 88px;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .hero__halo {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    width: min(1100px, 150vw);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      rgba(214, 195, 173, 0.55),
+      rgba(228, 213, 195, 0.25) 55%,
+      transparent 100%
+    );
+  }
+
+  .hero__float {
+    position: absolute;
+    display: block;
+    color: var(--sand-2);
+    opacity: 0.55;
+  }
+
+  .hero__float :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  @media (max-width: 640px) {
+    .hero__float:nth-child(n + 5) {
+      display: none;
+    }
+  }
+
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(246, 237, 228, 0.6);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: clamp(16px, 3svh, 32px);
+  }
+
+  .hero__pulse {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--brown);
+  }
+
+  .hero__pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--brown);
+    animation: pulse 2s var(--ease-out) infinite;
+  }
+
+  @keyframes pulse {
+    to {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+
+  .hero__logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: var(--logo-w);
+    container-type: inline-size;
+    font-weight: 400;
+  }
+
+  .hero__dog {
+    display: block;
+    width: 70cqi;
+    clip-path: circle(75% at 50% 50%);
+  }
+
+  .hero__dog-inner {
+    display: block;
+  }
+
+  .hero__dog :global(img) {
+    width: 100%;
+    filter: drop-shadow(0 24px 30px rgba(20, 18, 16, 0.12));
+  }
+
+  .hero__word {
+    display: flex;
+    justify-content: center;
+    margin-top: 4cqi;
+    margin-right: -0.42em;
+    font-family: var(--font-display);
+    font-size: 10.4cqi;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.42em;
+  }
+
+  .hero__letter {
+    display: inline-block;
+  }
+
+  .hero__script-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 4cqi;
+    margin-top: 2.5cqi;
+  }
+
+  .hero__rule {
+    flex: 1;
+    height: 1px;
+    background: var(--ink);
+    margin-top: 4cqi;
+  }
+
+  .hero__rule--l {
+    transform-origin: right;
+  }
+
+  .hero__rule--r {
+    transform-origin: left;
+  }
+
+  .hero__script {
+    font-family: var(--font-script);
+    font-size: 25cqi;
+    line-height: 1.05;
+    padding-inline: 0.06em 0.12em;
+  }
+
+  .hero__paw {
+    display: block;
+    width: 7cqi;
+    margin-top: 0.5cqi;
+  }
+
+  .hero__lead {
+    max-width: 30em;
+    margin-top: clamp(18px, 3svh, 32px);
+    color: var(--muted);
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
+    text-wrap: balance;
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: clamp(20px, 3.4svh, 36px);
+  }
+
+  .hero__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    translate: -50% 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @media (min-width: 720px) and (min-height: 980px) {
+    .hero__scroll {
+      display: flex;
+    }
+  }
+
+  .hero__scroll-line {
+    position: relative;
+    width: 1px;
+    height: 44px;
+    background: var(--line);
+    overflow: hidden;
+  }
+
+  .hero__scroll-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform: translateY(-100%);
+    animation: scroll-line 2.2s var(--ease-in-out) infinite;
+  }
+
+  @keyframes scroll-line {
+    0% {
+      transform: translateY(-100%);
+    }
+    50% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__pulse::after,
+    .hero__scroll-line::after {
+      animation: none;
+    }
+  }
+</style>

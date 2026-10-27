@@ -1,0 +1,183 @@
+---
+import Arrow from './icons/Arrow.astro';
+import { site } from '../data/site';
+
+const opening = new Date(site.openingDate);
+const fmt = (opts: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat('fi-FI', { timeZone: 'Europe/Helsinki', ...opts }).format(opening);
+const dayMonth = fmt({ day: 'numeric', month: 'long' });
+const full = fmt({ day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+const units = [
+  { id: 'days', label: 'päivää' },
+  { id: 'hours', label: 'tuntia' },
+  { id: 'minutes', label: 'minuuttia' },
+  { id: 'seconds', label: 'sekuntia' },
+];
+---
+
+<section class="countdown" id="avajaiset" data-countdown data-target={site.openingDate}>
+  <span class="countdown__watermark" aria-hidden="true">Costa</span>
+
+  <div class="container">
+    <div class="countdown__head">
+      <div>
+        <p class="eyebrow countdown__eyebrow" data-reveal>Avajaiset</p>
+        <h2 class="h2 countdown__title" data-split>
+          <span data-cd-soon>Ovet aukeavat <em>{dayMonth}</em></span>
+          <span data-cd-open hidden>Olemme <em>auki!</em></span>
+        </h2>
+      </div>
+      <div class="countdown__side" data-reveal>
+        <p data-cd-soon>
+          Ajanvaraukset otetaan vastaan jo nyt. Varaa koirallesi ensimmäinen hoito ja ole
+          avajaisviikon ensimmäisten joukossa.
+        </p>
+        <p data-cd-open hidden>Tervetuloa! Varaa aika puhelimitse tai sähköpostilla.</p>
+        <a class="btn btn--light" href="#yhteys" data-magnetic>
+          <span class="btn__label">Varaa aika</span>
+          <Arrow />
+        </a>
+      </div>
+    </div>
+
+    <p class="sr-only" data-cd-soon>Avajaiset {full}.</p>
+
+    <div class="countdown__timer" aria-hidden="true" data-cd-soon data-reveal-stagger>
+      {
+        units.map((u) => (
+          <div class="cd-unit">
+            <span class="cd-value" data-cd={u.id}>
+              00
+            </span>
+            <span class="cd-label">{u.label}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .countdown {
+    position: relative;
+    padding-block: clamp(80px, 11vw, 150px);
+    background: var(--ink);
+    color: var(--cream);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .countdown__watermark {
+    position: absolute;
+    right: -4vw;
+    bottom: -10vw;
+    z-index: -1;
+    font-family: var(--font-script);
+    font-size: clamp(14rem, 38vw, 34rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(246, 237, 228, 0.09);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .countdown__head {
+    display: grid;
+    gap: 32px;
+    align-items: end;
+  }
+
+  @media (min-width: 900px) {
+    .countdown__head {
+      grid-template-columns: 1.3fr 1fr;
+      gap: 64px;
+    }
+  }
+
+  .countdown__eyebrow {
+    color: var(--sand-2);
+    margin-bottom: 22px;
+  }
+
+  .countdown__title em {
+    color: var(--sand-2);
+  }
+
+  .countdown__side {
+    display: grid;
+    justify-items: start;
+    gap: 28px;
+    color: rgba(246, 237, 228, 0.72);
+    max-width: 30em;
+  }
+
+  .countdown__timer {
+    display: none;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: clamp(48px, 7vw, 96px);
+    border-top: 1px solid var(--line-light);
+  }
+
+  :global(.js) .countdown__timer {
+    display: grid;
+  }
+
+  @media (min-width: 720px) {
+    .countdown__timer {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .cd-unit {
+    display: grid;
+    gap: 6px;
+    padding: clamp(20px, 3vw, 36px) clamp(12px, 2vw, 28px) 0;
+    border-left: 1px solid var(--line-light);
+  }
+
+  .cd-unit:nth-child(odd) {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  @media (min-width: 720px) {
+    .cd-unit:nth-child(odd) {
+      border-left: 1px solid var(--line-light);
+      padding-left: clamp(12px, 2vw, 28px);
+    }
+    .cd-unit:first-child {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+
+  .cd-value {
+    display: flex;
+    font-family: var(--font-display);
+    font-size: clamp(4.2rem, 2rem + 8vw, 9.5rem);
+    font-weight: 400;
+    line-height: 1;
+    font-variant-numeric: lining-nums tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .cd-value :global(.cd-digit) {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    height: 1.05em;
+    padding-top: 0.05em;
+  }
+
+  .cd-value :global(.cd-digit > span) {
+    display: block;
+  }
+
+  .cd-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sand-2);
+  }
+</style>

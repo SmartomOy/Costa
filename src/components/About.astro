@@ -1,0 +1,273 @@
+---
+import { Image } from 'astro:assets';
+import dog from '../assets/logo-dog.png';
+import Paw from './icons/Paw.astro';
+import { about, site, stats, values } from '../data/site';
+
+const ring = 'TRIMMAAMO COSTA • HELLÄVARAISESTI • YKSILÖLLISESTI • ';
+---
+
+<section class="section about" id="meista">
+  <div class="container about__grid">
+    <div class="about__visual">
+      <figure class="about__frame" data-mask-reveal>
+        <div class="about__frame-inner" data-parallax="-8">
+          <!-- PAIKKATIETO: vaihda tähän trimmarin oma kuva -->
+          <Image src={dog} alt={`${site.name} – logon koira`} widths={[360, 540, 676]} sizes="(max-width: 900px) 70vw, 420px" />
+        </div>
+        <Paw class="about__frame-paw" />
+      </figure>
+
+      <div class="about__badge" aria-hidden="true" data-spin>
+        <svg viewBox="0 0 200 200">
+          <defs>
+            <path id="ring" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"></path>
+          </defs>
+          <text>
+            <textPath href="#ring" textLength="476">{ring}</textPath>
+          </text>
+        </svg>
+        <Paw class="about__badge-paw" />
+      </div>
+    </div>
+
+    <div class="about__content">
+      <p class="eyebrow" data-reveal>Meistä</p>
+      <h2 class="h2" data-split>Jokainen koira on <em>yksilö</em></h2>
+      <div class="about__text" data-reveal-stagger>
+        {about.map((p) => <p>{p}</p>)}
+      </div>
+
+      <ol class="values" data-reveal-stagger>
+        {
+          values.map((v, i) => (
+            <li class="value">
+              <span class="value__num">0{i + 1}</span>
+              <div>
+                <h3 class="value__title">{v.title}</h3>
+                <p class="value__text">{v.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="about__sign" data-reveal>
+        <span class="about__sign-name">{site.ownerFirstName}</span>
+        <span class="about__sign-role">Koiratrimmari, {site.name}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <dl class="stats" data-reveal-stagger>
+      {
+        stats.map((s) => (
+          <div class="stat">
+            <dt class="stat__label">{s.label}</dt>
+            <dd class="stat__value">
+              <span data-count={s.value}>{s.value}</span>
+              {s.suffix}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .about {
+    background: var(--cream-2);
+    border-top: 1px solid var(--line);
+  }
+
+  .about__grid {
+    display: grid;
+    gap: clamp(56px, 8vw, 96px);
+    align-items: center;
+  }
+
+  @media (min-width: 960px) {
+    .about__grid {
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+  }
+
+  .about__visual {
+    position: relative;
+    width: min(100%, 460px);
+    justify-self: center;
+  }
+
+  .about__frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
+    background:
+      radial-gradient(70% 60% at 50% 40%, var(--cream) 0%, transparent 70%),
+      var(--sand);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+
+  .about__frame-inner {
+    width: 82%;
+    margin-top: 14%;
+  }
+
+  .about__frame-inner :global(img) {
+    width: 100%;
+  }
+
+  .about__frame :global(.about__frame-paw) {
+    position: absolute;
+    left: 10%;
+    bottom: 8%;
+    width: 30px;
+    color: var(--brown);
+    opacity: 0.5;
+    rotate: -20deg;
+  }
+
+  .about__badge {
+    position: absolute;
+    right: -6%;
+    bottom: 6%;
+    width: clamp(120px, 26vw, 156px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--cream);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 24px 40px -20px rgba(20, 18, 16, 0.5);
+  }
+
+  .about__badge svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .about__badge text {
+    fill: currentColor;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .about__badge :global(.about__badge-paw) {
+    width: 30%;
+    color: var(--sand-2);
+  }
+
+  @media (max-width: 520px) {
+    .about__badge {
+      right: -2%;
+    }
+  }
+
+  .about__content {
+    display: grid;
+    gap: 24px;
+  }
+
+  .about__text {
+    display: grid;
+    gap: 16px;
+    color: var(--muted);
+    max-width: 36em;
+  }
+
+  .values {
+    display: grid;
+    margin-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+
+  .value {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 12px;
+    padding-block: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .value__num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--brown);
+  }
+
+  .value__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .value__text {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .about__sign {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-top: 8px;
+  }
+
+  .about__sign-name {
+    font-family: var(--font-script);
+    font-size: 3.2rem;
+    line-height: 1;
+    color: var(--brown);
+  }
+
+  .about__sign-role {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: clamp(64px, 9vw, 120px);
+    border-top: 1px solid var(--line);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 6px;
+    padding: clamp(20px, 3vw, 36px) clamp(8px, 2vw, 24px) 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .stat:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .stat__value {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 1.4rem + 6vw, 7rem);
+    font-weight: 400;
+    line-height: 1;
+    font-variant-numeric: lining-nums;
+  }
+
+  .stat__label {
+    font-size: clamp(0.72rem, 0.65rem + 0.3vw, 0.85rem);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>
